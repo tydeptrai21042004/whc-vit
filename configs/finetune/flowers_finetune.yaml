@@ -1,0 +1,17 @@
+_BASE_: "../base-finetune.yaml"
+
+RUN_N_TIMES: 1
+
+DATA:
+  NAME: "OxfordFlowers"
+  DATAPATH: "/content/flowers"     # <-- change to your real path
+  NUMBER_CLASSES: 102
+  MULTILABEL: False
+
+MODEL:
+  TYPE: "vit"                      # use ViT backbone
+  TRANSFER_TYPE: "finetune"        # full fine-tuning, no prompt
+
+SOLVER:
+  BASE_LR: 0.001
+  WEIGHT_DECAY: 0.0001

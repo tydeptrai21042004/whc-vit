@@ -1,0 +1,40 @@
+schema_version: 2
+proposal: DT1D-Adapter
+architecture: R124-P2-G16-Axis-LearnedGate
+reference_config: configs/finetune/flowers_dt1d.yaml
+note: >-
+  Reviewer controls only. Each row changes one component from the canonical
+  DT1D-Adapter; these rows are not additional proposal methods.
+variants:
+  dt1d_final: {}
+  direct_symmetric_no_shift:
+    MODEL.ADAPTER.DT1D.SHIFT_LAMBDA_MODE: off
+    MODEL.ADAPTER.DT1D.SHIFT_LAMBDA_INIT: 0.0
+  block_shared_lambda:
+    MODEL.ADAPTER.DT1D.SHIFT_LAMBDA_SCOPE: block
+  fixed_lambda025:
+    MODEL.ADAPTER.DT1D.SHIFT_LAMBDA_MODE: fixed
+    MODEL.ADAPTER.DT1D.SHIFT_LAMBDA_INIT: 0.25
+  without_l1_projection:
+    MODEL.ADAPTER.DT1D.PROJECT_L1: false
+  fixed_residual_gate:
+    MODEL.ADAPTER.DT1D.GATE_MODE: fixed
+  gate_off:
+    MODEL.ADAPTER.DT1D.GATE_MODE: fixed
+    MODEL.ADAPTER.DT1D.GATE_INIT: 0.0
+  unshared_coefficients_group1:
+    MODEL.ADAPTER.DT1D.GROUP_SIZE: 1
+  height_axis_only:
+    MODEL.ADAPTER.DT1D.AXIS: h
+  width_axis_only:
+    MODEL.ADAPTER.DT1D.AXIS: w
+  single_radius4:
+    MODEL.ADAPTER.DT1D.ACTIVE_OFFSETS: "4"
+  without_psi4:
+    MODEL.ADAPTER.DT1D.DETAIL_COMPONENTS: none
+  with_pointwise_channel_mixing:
+    MODEL.ADAPTER.DT1D.USE_POINTWISE: true
+  shift_p1:
+    MODEL.ADAPTER.DT1D.SHIFT_P: 1
+  shift_p3:
+    MODEL.ADAPTER.DT1D.SHIFT_P: 3

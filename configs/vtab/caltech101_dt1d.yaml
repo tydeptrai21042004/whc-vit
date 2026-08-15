@@ -1,0 +1,54 @@
+NUM_GPUS: 1
+NUM_SHARDS: 1
+RUN_N_TIMES: 3
+OUTPUT_DIR: "outputs/dt1d_vtab_caltech101"
+MODEL:
+  TYPE: "vit"
+  TRANSFER_TYPE: "adapter"
+  MODEL_ROOT: ""
+  SAVE_CKPT: false
+  ADAPTER:
+    NAME: "DT1D"
+    DT1D:
+      AXIS: "hw"
+      GROUP_SIZE: 16
+      ACTIVE_OFFSETS: "1,2,4"
+      DETAIL_COMPONENTS: "offset4"
+      CONTRAST_SPLIT: 8
+      PROJECT_L1: true
+      GATE_MODE: "learned"
+      GATE_INIT: 0.01
+      RESIDUAL_SCALE: 1.0
+      PADDING: "replicate"
+      USE_POINTWISE: false
+      POINTWISE_RATIO: 32
+      POINTWISE_GROUPS: 4
+      USE_BN: false
+      CACHE_KERNEL: false
+      SHIFT_P: 2
+      SHIFT_LAMBDA_MODE: "learned"
+      SHIFT_LAMBDA_SCOPE: "axis"
+      SHIFT_LAMBDA_INIT: 0.0
+      SHIFT_LAMBDA_MAX: 0.5
+      SHIFT_NORMALIZATION: "mean"
+DATA:
+  NAME: "vtab-caltech101"
+  DATAPATH: "/content/data/vtab"
+  NUMBER_CLASSES: 102
+  MULTILABEL: false
+  FEATURE: "sup_vitb16_224"
+  BATCH_SIZE: 32
+  CROPSIZE: 224
+  NUM_WORKERS: 4
+  NO_TEST: false
+SOLVER:
+  LOSS: "softmax"
+  OPTIMIZER: "adamw"
+  MOMENTUM: 0.9
+  WEIGHT_DECAY: 0.0001
+  BASE_LR: 0.005
+  SCHEDULER: "cosine"
+  WARMUP_EPOCH: 1
+  TOTAL_EPOCH: 10
+  PATIENCE: 20
+  LOG_EVERY_N: 10
