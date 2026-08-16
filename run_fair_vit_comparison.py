@@ -39,6 +39,8 @@ from typing import Dict, Iterable, List, Tuple
 
 import yaml
 
+from proposal_contract import runtime_metadata
+
 METHOD_ORDER = ("dt1d", "vpt", "pfeiffer", "full", "linear")
 DISPLAY = {
     "dt1d": "DT1D-Adapter",
@@ -271,7 +273,7 @@ def method_fragment(method: str, vpt_tokens: int, pfeiffer_reduction: int) -> di
                         "RESIDUAL_SCALE": 1.0,
                         "PADDING": "replicate",
                         "USE_POINTWISE": False,
-                        "CACHE_KERNEL": False,
+                        "CACHE_KERNEL": True,
                         "SHIFT_P": 2,
                         "SHIFT_LAMBDA_MODE": "learned",
                         "SHIFT_LAMBDA_SCOPE": "axis",
@@ -783,6 +785,7 @@ def main() -> None:
         }
 
     audit.update({
+        **runtime_metadata(repo_root),
         "dataset": args.dataset,
         "protocol": ds["protocol"],
         "methods": methods,
@@ -982,6 +985,7 @@ def main() -> None:
             w.writerow(out)
 
     manifest = {
+        **runtime_metadata(repo_root),
         "fairness_audit": audit,
         "selected_hyperparameters": {
             f"bs{bs}/{method}": info for (bs, method), info in selected.items()

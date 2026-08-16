@@ -1,0 +1,44 @@
+{
+  "active_offsets": [
+    1,
+    2,
+    4
+  ],
+  "architecture": "R124-P2-G16-Axis-LearnedGate",
+  "axes": [
+    "h",
+    "w"
+  ],
+  "base_kernel_size": 9,
+  "depthwise_convolution_calls": 2,
+  "detail": {
+    "basis": "normalized_psi4",
+    "component": "offset4",
+    "contrast_split": 8
+  },
+  "effective_kernel_size": 13,
+  "group_size": 16,
+  "note": "This file is the cross-repository method contract. Runtime/inference caching is implementation-only and does not alter the proposal operator.",
+  "padding": "replicate",
+  "pointwise_channel_mixing": false,
+  "projection": {
+    "applied_after_weighted_shift": true,
+    "cap": 1.0,
+    "joint_hw_l1": true
+  },
+  "proposal": "DT1D-Adapter",
+  "residual": {
+    "gate_init": 0.01,
+    "gate_mode": "learned",
+    "scale": 1.0
+  },
+  "schema_version": 1,
+  "weighted_shift": {
+    "lambda_init": 0.0,
+    "lambda_max_abs": 0.5,
+    "lambda_mode": "learned",
+    "lambda_scope": "axis",
+    "normalization": "mean",
+    "p": 2
+  }
+}

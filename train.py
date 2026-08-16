@@ -6,6 +6,7 @@ import os
 import json
 import torch
 import warnings
+from pathlib import Path
 
 import numpy as np
 import random
@@ -22,6 +23,7 @@ from src.models.build_model import build_model
 from src.utils.file_io import PathManager
 
 from launch import default_argument_parser, logging_train_setup
+from proposal_contract import runtime_metadata
 warnings.filterwarnings("ignore")
 
 import os
@@ -218,6 +220,7 @@ def train(cfg, args):
             ),
             "total_parameters": int(sum(p.numel() for p in model.parameters())),
             "trainable_parameters": int(sum(p.numel() for p in model.parameters() if p.requires_grad)),
+            **runtime_metadata(Path(__file__).resolve().parent),
         })
         with open(os.path.join(cfg.OUTPUT_DIR, "run_summary.json"), "w", encoding="utf-8") as f:
             json.dump(summary, f, indent=2)

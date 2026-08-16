@@ -1,0 +1,36 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "DT1D-Adapter for Vision Transformers",
+  "description": "ViT implementation and validation-only fair comparison package for the same frozen DT1D-Adapter proposal used by whc-dt1d.",
+  "version": "2.0.2",
+  "datePublished": "2026-08-16",
+  "codeRepository": "https://github.com/tydeptrai21042004/whc-vit",
+  "license": "https://spdx.org/licenses/Apache-2.0",
+  "programmingLanguage": "Python",
+  "runtimePlatform": "Python and PyTorch",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Kim Huong",
+      "familyName": "Tran",
+      "name": "Tran Kim Huong",
+      "@id": "https://orcid.org/0009-0006-3211-4274"
+    },
+    {
+      "@type": "Person",
+      "givenName": "Ba Ty",
+      "familyName": "Dang",
+      "name": "Dang Ba Ty",
+      "@id": "https://orcid.org/0009-0007-3223-0248"
+    }
+  ],
+  "keywords": [
+    "parameter-efficient fine-tuning",
+    "visual adaptation",
+    "axial filtering",
+    "vision transformer",
+    "ConvNet",
+    "reproducibility"
+  ]
+}

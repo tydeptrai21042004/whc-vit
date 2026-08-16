@@ -63,3 +63,7 @@ Component variants in `configs/ablations/dt1d_components_vit.yaml` are reviewer 
 - `vtab-eurosat`
 
 DTD and EuroSAT are registered in source code directly; supporting Kaggle runs no longer modify `run_fair_vit_comparison.py` at runtime.
+
+## Provenance and inference timing
+
+Each final run records the repository version, Git commit when available, and proposal-contract SHA256. DT1D paper configs enable fused-kernel caching in evaluation mode so latency measurement does not repeatedly rebuild an unchanged kernel. This cache is execution-only and does not alter the mathematical proposal or predictions.

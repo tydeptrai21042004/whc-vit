@@ -26,8 +26,22 @@ The proposal reshapes ViT patch tokens to a 2D grid, applies a compact two-axis 
 | Padding | replicate |
 | Effective axial kernel | 13 |
 | Axial depthwise calls | 2 |
+| Eval kernel cache | enabled in paper configs; execution-only optimization |
 
 The canonical implementation is `src/models/vit_adapter/dt1d_adapter.py`. Main paper experiments must not alter the architecture above. Component changes belong only in `configs/ablations/dt1d_components_vit.yaml`.
+
+
+## Cross-repository proposal lock and release provenance
+
+`proposal_spec.json` is byte-for-byte the same method contract shipped by `tydeptrai21042004/whc-dt1d`. The model implementation remains separate for ViT token integration, but the frozen operator settings are checked against this contract.
+
+```bash
+python proposal_fingerprint.py
+python proposal_fingerprint.py --compare /path/to/whc-dt1d
+python check_environment.py
+```
+
+Final run summaries and fair-protocol manifests record the repository version, Git commit when available, and the proposal-contract SHA256. `CITATION.cff`, `codemeta.json`, `.zenodo.json`, and `environment.yml` are included for a versioned archival release. Eval-time fused-kernel caching does not change the proposal, parameter count, or numerical operator; it only avoids rebuilding an unchanged effective kernel on repeated inference calls.
 
 ## Preserved baselines
 
@@ -88,7 +102,7 @@ The V01 and V02 cells correspond to the supplied DTD and EuroSAT supporting expe
 python validate_dt1d_vit.py
 python verify_vpt_original.py
 python verify_fair_protocol.py
-pytest -q tests
+python -m pytest -q tests
 ```
 
 ## Dry-run a fair comparison
