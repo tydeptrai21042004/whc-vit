@@ -1,0 +1,47 @@
+{
+  "validated_at": "2026-08-16",
+  "proposal": "DT1D-Adapter",
+  "architecture": "R124-P2-G16-Axis-LearnedGate",
+  "proposal_fingerprint_sha256": "c5a9104df8cb882b75d6176c3730a18d0dd61c2645f4000e654b62e561f14093",
+  "proposal_changed": false,
+  "cross_repo_same_contract": true,
+  "method_contract": {
+    "axes": [
+      "h",
+      "w"
+    ],
+    "group_size": 16,
+    "active_offsets": [
+      1,
+      2,
+      4
+    ],
+    "detail": "normalized_psi4",
+    "weighted_shift_p": 2,
+    "lambda_mode": "learned-axis",
+    "lambda_init": 0.0,
+    "lambda_max_abs": 0.5,
+    "joint_hw_l1_cap": 1.0,
+    "residual_gate": "learned@0.01",
+    "pointwise": false,
+    "padding": "replicate",
+    "base_kernel_size": 9,
+    "effective_kernel_size": 13,
+    "depthwise_convolution_calls": 2
+  },
+  "repository": "tydeptrai21042004/whc-vit",
+  "version": "2.0.1",
+  "core_source_sha256": {
+    "src/models/vit_adapter/dt1d_adapter.py": "033e4b6b2138c0db371c2713d87433d12700a47ec3ffde168181728400ac0c42"
+  },
+  "validation": [
+    "validate_dt1d_vit.py PASS",
+    "verify_fair_protocol.py PASS",
+    "verify_vpt_original.py PASS",
+    "python -m pytest -q tests: 37 passed",
+    "compileall PASS",
+    "shell syntax PASS",
+    "validate_release.sh PASS"
+  ],
+  "note": "A full ViT training smoke run was not executed in the current sandbox because optional runtime dependencies are not installed here; the pinned environment.yml and check_environment.py cover setup validation."
+}

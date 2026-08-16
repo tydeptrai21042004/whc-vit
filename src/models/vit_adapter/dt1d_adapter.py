@@ -123,6 +123,8 @@ class DT1DAdapter(nn.Module):
         lambda_init = float(shift_lambda_init)
         if not math.isfinite(lambda_max) or lambda_max <= 0:
             raise ValueError("shift_lambda_max must be finite and > 0")
+        if not math.isfinite(lambda_init):
+            raise ValueError("shift_lambda_init must be finite")
         if abs(lambda_init) > lambda_max + 1e-12:
             raise ValueError(
                 f"|shift_lambda_init| must be <= {lambda_max}, got {lambda_init}"
@@ -394,6 +396,28 @@ class DT1DAdapter(nn.Module):
         if mode:
             self.clear_inference_cache()
         return super().train(mode)
+
+    def _load_from_state_dict(
+        self,
+        state_dict,
+        prefix,
+        local_metadata,
+        strict,
+        missing_keys,
+        unexpected_keys,
+        error_msgs,
+    ):
+        super()._load_from_state_dict(
+            state_dict,
+            prefix,
+            local_metadata,
+            strict,
+            missing_keys,
+            unexpected_keys,
+            error_msgs,
+        )
+        # Cached fused kernels correspond to the pre-load parameters.
+        self.clear_inference_cache()
 
     def _kernels_for(self, x: torch.Tensor) -> torch.Tensor:
         if self.cache_kernel and not self.training:
