@@ -101,3 +101,20 @@ def test_vpt_source_files_are_untouched():
     import run_fair_vit_comparison as fair
     audit = fair.verify_vpt_source_fidelity(Path(__file__).resolve().parents[1])
     assert audit["status"] == "PASS"
+
+
+def test_publication_seed_modes_are_fail_closed():
+    import run_fair_vit_comparison as fair
+    assert fair.resolve_final_seeds(None, "table") == [0, 1, 2]
+    assert fair.resolve_final_seeds("0,1,2,3", "table") == [0, 1, 2, 3]
+    assert fair.resolve_final_seeds(None, "figure") == [0]
+    assert fair.resolve_final_seeds("7", "figure") == [7]
+    import pytest
+    with pytest.raises(SystemExit): fair.resolve_final_seeds("0,1", "table")
+    with pytest.raises(SystemExit): fair.resolve_final_seeds("0,1", "figure")
+    with pytest.raises(SystemExit): fair.resolve_final_seeds("0,0,1", "table")
+
+def test_result_csv_names_preserve_support_run_contract():
+    import run_fair_vit_comparison as fair
+    assert fair.result_csv_name("vtab-eurosat", "table", [0,1,2]).endswith("_fair_three_seed.csv")
+    assert fair.result_csv_name("vtab-eurosat", "figure", [0]).endswith("_fair_single_seed.csv")

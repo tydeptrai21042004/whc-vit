@@ -14,7 +14,8 @@ Every method receives the same:
 - cosine scheduler family;
 - weight decay `1e-4`;
 - tune seed `42`;
-- final seeds `0,1,2`;
+- table mode: at least three final seeds (default `0,1,2`);
+- figure mode: exactly one representative final seed (default `0`);
 - number of LR candidates: **10**;
 - best-validation checkpoint rule;
 - one final test evaluation per final seed.
@@ -43,7 +44,7 @@ DATA.NO_TEST = True
 
 For each method, validation performance selects the LR. Final seeds are then trained under the selected method configuration, the best-validation checkpoint is restored, and test is evaluated exactly once for that seed.
 
-The primary manuscript metric should therefore be **Test Acc1 at best validation**, summarized as mean ± standard deviation over seeds `0,1,2`.
+The primary manuscript metric should therefore be **Test Acc1 at best validation**, summarized as mean ± sample standard deviation over at least three final seeds. A training-based figure is explicitly single-seed and must not display a multi-seed standard deviation.
 
 ## Proposal identity
 

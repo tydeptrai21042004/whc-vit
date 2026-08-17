@@ -171,6 +171,30 @@ def parse_csv_numbers(text: str, typ=float) -> List:
     return [typ(x.strip()) for x in text.replace(";", ",").split(",") if x.strip()]
 
 
+def resolve_final_seeds(seed_text: str | None, result_mode: str) -> List[int]:
+    """Fail-closed publication seed policy for quantitative tables and figures."""
+    if result_mode not in {"table", "figure"}:
+        raise ValueError(f"Unknown result_mode={result_mode!r}")
+    default = [0, 1, 2] if result_mode == "table" else [0]
+    seeds = default if seed_text is None else parse_csv_numbers(seed_text, int)
+    if not seeds or len(seeds) != len(set(seeds)):
+        raise SystemExit("Final seeds must be non-empty and unique")
+    if result_mode == "table" and len(seeds) < 3:
+        raise SystemExit("Table mode requires at least three independent final seeds")
+    if result_mode == "figure" and len(seeds) != 1:
+        raise SystemExit("Figure mode requires exactly one representative final seed")
+    return [int(x) for x in seeds]
+
+
+def result_csv_name(dataset: str, result_mode: str, seeds: List[int]) -> str:
+    stem = dataset.replace("-", "_")
+    if result_mode == "figure":
+        return f"{stem}_fair_single_seed.csv"
+    if seeds == [0, 1, 2]:
+        return f"{stem}_fair_three_seed.csv"
+    return f"{stem}_fair_table_{len(seeds)}seed.csv"
+
+
 def deep_merge(base: dict, update: dict) -> dict:
     out = json.loads(json.dumps(base))
     for key, value in update.items():
@@ -667,7 +691,8 @@ def main() -> None:
     ap.add_argument("--methods", default=",".join(METHOD_ORDER))
     ap.add_argument("--epochs", type=int, default=10)
     ap.add_argument("--resolution", type=int, default=224)
-    ap.add_argument("--seeds", default="0,1,2")
+    ap.add_argument("--result-mode", choices=("table", "figure"), default="table", help="table: >=3 final seeds; figure: exactly 1 representative final seed")
+    ap.add_argument("--seeds", default=None, help="Final seeds. Defaults: table=0,1,2; figure=0")
     ap.add_argument("--tune-seed", type=int, default=42)
     ap.add_argument(
         "--lr-grid", default=None,
@@ -728,9 +753,7 @@ def main() -> None:
     unknown = [m for m in methods if m not in METHOD_ORDER]
     if unknown:
         raise SystemExit(f"Unknown methods: {unknown}")
-    final_seeds = parse_csv_numbers(args.seeds, int)
-    if final_seeds != [0, 1, 2]:
-        raise SystemExit("Paper comparison requires final seeds exactly 0,1,2")
+    final_seeds = resolve_final_seeds(args.seeds, args.result_mode)
     args.vpt_tokens = int(args.vpt_tokens if args.vpt_tokens is not None else ds["vpt_tokens"])
 
     if args.fixed_lr is not None and args.fixed_lr <= 0:
@@ -790,7 +813,10 @@ def main() -> None:
         "protocol": ds["protocol"],
         "methods": methods,
         "batch_sizes": batches,
+        "result_mode": args.result_mode,
+        "seed_policy": "at_least_three" if args.result_mode == "table" else "exactly_one",
         "final_seeds": final_seeds,
+        "final_seed_count": len(final_seeds),
         "tune_seed": None if args.fixed_lr is not None else args.tune_seed,
         "method_optimizers": {m: method_optimizer(m) for m in methods},
         "weight_decay": args.weight_decay,
@@ -969,7 +995,7 @@ def main() -> None:
 
     result_dir = out_root / "aggregated"
     result_dir.mkdir(parents=True, exist_ok=True)
-    csv_path = result_dir / f"{args.dataset.replace('-', '_')}_fair_three_seed.csv"
+    csv_path = result_dir / result_csv_name(args.dataset, args.result_mode, final_seeds)
     fields = [
         "batch_size", "method", "method_key", "optimizer", "selected_lr", "tune_best_val",
         "trainable_parameters", "total_parameters", "best_val_mean", "best_val_std",
@@ -986,6 +1012,9 @@ def main() -> None:
 
     manifest = {
         **runtime_metadata(repo_root),
+        "result_mode": args.result_mode,
+        "seed_policy": "at_least_three" if args.result_mode == "table" else "exactly_one",
+        "final_seeds": final_seeds,
         "fairness_audit": audit,
         "selected_hyperparameters": {
             f"bs{bs}/{method}": info for (bs, method), info in selected.items()
@@ -998,13 +1027,18 @@ def main() -> None:
     }
     (result_dir / "fair_protocol_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
-    print("\nFINAL FAIR THREE-SEED RESULTS")
-    print("=============================")
+    heading = "FINAL FAIR TABLE RESULTS" if args.result_mode == "table" else "FINAL FAIR SINGLE-SEED FIGURE RESULTS"
+    print("\n" + heading)
+    print("=" * len(heading))
     for row in final_table:
+        metric = (
+            f"test={row['test_mean']:.3f} ± {row['test_std']:.3f}"
+            if args.result_mode == "table"
+            else f"test={row['test_mean']:.3f} (seed {final_seeds[0]})"
+        )
         print(
             f"BS={row['batch_size']:>3}  {row['method']:<22} "
-            f"opt={row['optimizer']:<5} lr={row['selected_lr']:<10g} "
-            f"test={row['test_mean']:.3f} ± {row['test_std']:.3f}"
+            f"opt={row['optimizer']:<5} lr={row['selected_lr']:<10g} {metric}"
         )
     print(f"\nCSV: {csv_path}")
     print(f"Manifest: {result_dir / 'fair_protocol_manifest.json'}")

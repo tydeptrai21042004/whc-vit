@@ -12,8 +12,8 @@ authors:
   orcid: https://orcid.org/0009-0007-3223-0248
 repository-code: https://github.com/tydeptrai21042004/whc-vit
 url: https://github.com/tydeptrai21042004/whc-vit
-version: 2.0.2
-date-released: '2026-08-16'
+version: 2.0.3
+date-released: '2026-08-17'
 license: Apache-2.0
 keywords:
 - parameter-efficient fine-tuning

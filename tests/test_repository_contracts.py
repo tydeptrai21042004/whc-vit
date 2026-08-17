@@ -112,6 +112,9 @@ def test_support_cells_use_canonical_method_set_without_runtime_source_patching(
         assert "validate_dt1d_vit.py" in text
         assert "verify_fair_protocol.py" in text
         assert "SESSION_STATUS.json" in text
+        assert "RESULT_MODE" in text
+        assert "FINAL_SEEDS" in text
+        assert "tydeptrai21042004/whc-vit.git" in text
 
 
 def test_all_kaggle_cells_have_valid_shell_syntax():

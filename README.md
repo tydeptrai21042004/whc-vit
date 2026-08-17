@@ -69,7 +69,7 @@ For each dataset and batch size:
 3. optimizer family/LR scale remain method-faithful (VPT/Linear use SGD+momentum; Full FT uses AdamW; DT1D/Pfeiffer use AdamW);
 4. `DATA.NO_TEST=True` during hyperparameter tuning;
 5. the selected LR is chosen from validation results only;
-6. final runs use seeds `0,1,2` and evaluate test once after restoring the best-validation checkpoint.
+6. table runs use at least three final seeds (default `0,1,2`); training-based figure runs use exactly one representative seed (default `0`); test is evaluated once after restoring each final seed's best-validation checkpoint.
 
 See `FAIR_COMPARISON.md` for details.
 
@@ -116,7 +116,7 @@ python run_fair_vit_comparison.py \
   --batch-sizes 32 \
   --methods dt1d,vpt,pfeiffer,full,linear \
   --epochs 10 \
-  --seeds 0,1,2 \
+  --result-mode table --seeds 0,1,2 \
   --tune-seed 42 \
   --dry-run \
   --gpus cpu

@@ -61,6 +61,11 @@ def main():
     for method in fair.METHOD_ORDER:
         setattr(args, f"{method}_lr_grid", None)
 
+    assert fair.resolve_final_seeds(None, "table") == [0, 1, 2]
+    assert fair.resolve_final_seeds("0,1,2,3", "table") == [0, 1, 2, 3]
+    assert fair.resolve_final_seeds(None, "figure") == [0]
+    assert fair.resolve_final_seeds("7", "figure") == [7]
+
     grids = {m: fair.resolve_method_lr_grid(args, m, 32) for m in fair.METHOD_ORDER}
     assert {len(x) for x in grids.values()} == {10}
     for method in fair.METHOD_ORDER:

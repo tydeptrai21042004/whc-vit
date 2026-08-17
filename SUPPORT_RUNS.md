@@ -37,3 +37,7 @@ kaggle_cells/V02_vtab_eurosat_vitb16_fair.sh
 ## Important
 
 The supplied materials define and launch the supporting runs; they do not contain completed numeric result tables. Therefore this repository stores the corrected reproducible run cells and result-packaging logic, but does not invent accuracy numbers. Once a session completes, its cell writes `SESSION_STATUS.json`, run metadata/aggregates and a compact result ZIP.
+
+## Seed modes
+
+Both V01 and V02 are fresh-standalone cells. Their default is `RESULT_MODE=table` with `FINAL_SEEDS=0,1,2`. To create a representative one-seed support figure instead, run the same cell with `RESULT_MODE=figure FINAL_SEEDS=0`. Table mode rejects fewer than three seeds; figure mode rejects more than one seed.
