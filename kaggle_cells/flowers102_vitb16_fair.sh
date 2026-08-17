@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-REPO_URL="${REPO_URL:-https://github.com/tydeptrai21042004/DT1D-vit.git}"
+REPO_URL="${REPO_URL:-https://github.com/tydeptrai21042004/whc-vit.git}"
 REPO_COMMIT="${REPO_COMMIT:-}"
 WORKDIR="/kaggle/working"
-REPO_DIR="$WORKDIR/DT1D-vit-fair-flowers"
+REPO_DIR="$WORKDIR/whc-vit-fair-flowers"
 DOWNLOAD_ROOT="$WORKDIR/flowers_download"
 MODEL_ROOT="$WORKDIR/vit_weights"
 OUTPUT_ROOT="$WORKDIR/flowers102_vitb16_fair"
